@@ -24,7 +24,7 @@ def get_products():
         output += '\t'.join(str(item) for item in row) + '\n'
     return f'<pre>{output}</pre>'
 
-@app.route('/good')
+@app.route('/')
 def good():
     return 'This is the /good route. Service is running!'
 
