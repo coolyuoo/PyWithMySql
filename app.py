@@ -11,7 +11,8 @@ app = FastAPI()
 def get_db_connection():
     """建立資料庫連線；優先使用環境變數設定。"""
     return mysql.connector.connect(
-        host=os.getenv('DB_HOST', 'localhost'),
+        #host=os.getenv('DB_HOST', 'localhost'),
+        host=os.getenv('DB_HOST', 'mysql-container'),
         user=os.getenv('DB_USER', 'testuser'),
         password=os.getenv('DB_PASSWORD', 'testpass'),
         database=os.getenv('DB_NAME', 'testdb'),
