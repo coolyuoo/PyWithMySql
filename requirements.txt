@@ -1,0 +1,5 @@
+# Requirements for app.py
+fastapi
+uvicorn[standard]
+mysql-connector-python
+
