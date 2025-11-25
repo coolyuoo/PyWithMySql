@@ -1,10 +1,10 @@
 version: "3.8"
 
 services:
-  db: # MySQL 資料庫
+  db:
     image: mysql:8.0
     ports:
-      - "4406:3306"            # 本機 4406 -> 容器 3306
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: testdb
@@ -12,11 +12,19 @@ services:
       MYSQL_PASSWORD: testpass
     volumes:
       - "D:/docker/mysql:/var/lib/mysql"
+    networks:
+      - pytosql
 
-  app: # Python 應用
+  app:
     build: .
     ports:
-      - "8000:8000"            # 本機 8000 -> 容器 8000
+      - "8090:8090"
     depends_on:
-      - db                     # 先啟動 db 再啟動 app
+      - db
     command: ["python", "app.py"]
+    networks:
+      - pytosql
+
+networks:
+  pytosql:
+    external: true
