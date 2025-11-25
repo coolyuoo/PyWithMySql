@@ -14,9 +14,9 @@ def get_db_connection():
     使用 PyMySQL 連到 MySQL。
     """
     return pymysql.connect(
-        host=os.getenv('DB_HOST', 'localhost'),
+        host=os.getenv('DB_HOST', 'mysql-container'),
         # 如果你是 docker-compose 對外 3308:3306，就改成預設 3308
-        port=int(os.getenv('DB_PORT', '3307')),
+        port=int(os.getenv('DB_PORT', '3306')),
         user=os.getenv('DB_USER', 'testuser'),
         password=os.getenv('DB_PASSWORD', 'testpass'),
         database=os.getenv('DB_NAME', 'testdb'),
@@ -59,4 +59,4 @@ def root():
 
 if __name__ == '__main__':
     # 檔名如果是 app.py，就用 "app:app"
-    uvicorn.run('app2:app', host='0.0.0.0', port=8090)
+    uvicorn.run('app:app', host='0.0.0.0', port=8090)
