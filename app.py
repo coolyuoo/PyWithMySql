@@ -60,7 +60,7 @@ def get_products():
 
 @app.route('/', methods=['GET'])
 def root():
-    return 'Service is running on2 /.'
+    return 'hello taiwandocker'
 
 
 if __name__ == '__main__':

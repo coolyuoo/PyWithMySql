@@ -3,3 +3,5 @@
 把APP.PY 的內容複製到新的專案中
 
 pip install Flask==3.0.2 && pip install pymysql==1.1.0
+
+pip install Flask==3.0.2 pymysql==1.1.0
