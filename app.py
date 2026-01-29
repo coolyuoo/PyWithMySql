@@ -13,8 +13,8 @@ def get_db_connection():
     """
     return pymysql.connect(
         host=os.getenv('DB_HOST', 'mysql-container'),
-        # 如果你是 docker-compose 對外 3308:3306，就改成預設 3308
-        port=int(os.getenv('DB_PORT', '3306')),
+        port=int(os.getenv('DB_PORT', '3307')), # 如果你是 docker-compose 對外 3307:3306，就改成預設 3307
+        #port=int(os.getenv('DB_PORT', '3306')), # 如果你是 docker-compose 對內 3307:3306，就改成預設 3306
         user=os.getenv('DB_USER', 'testuser'),
         password=os.getenv('DB_PASSWORD', 'testpass'),
         database=os.getenv('DB_NAME', 'testdb'),
