@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install Flask==3.0.2 && pip install pymysql==1.1.0
 
 CMD ["python", "app.py"]

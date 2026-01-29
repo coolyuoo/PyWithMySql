@@ -1,11 +1,9 @@
 import os
-import uvicorn
 import pymysql
 from pymysql.err import MySQLError
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from flask import Flask, abort
 
-app = FastAPI()
+app = Flask(__name__)
 
 
 def get_db_connection():
@@ -21,11 +19,11 @@ def get_db_connection():
         password=os.getenv('DB_PASSWORD', 'testpass'),
         database=os.getenv('DB_NAME', 'testdb'),
         charset="utf8mb4",
-        cursorclass=pymysql.cursors.Cursor,  # 回傳 tuple，方便下面照你的寫法輸出
+        cursorclass=pymysql.cursors.Cursor,  # 回傳 tuple
     )
 
 
-@app.get('/products', response_class=HTMLResponse)
+@app.route('/products', methods=['GET'])
 def get_products():
     conn = None
     cursor = None
@@ -34,29 +32,38 @@ def get_products():
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM Product')
         results = cursor.fetchall()
-        columns = [desc[0] for desc in cursor.description]
+
+        # 取得欄位名稱
+        if cursor.description:
+            columns = [desc[0] for desc in cursor.description]
+        else:
+            columns = []
+
+        # 將欄位與資料列格式化為簡單的表格樣式字串
+        lines = ['\t'.join(columns)]
+        for row in results:
+            lines.append('\t'.join(str(item) for item in row))
+        output = '\n'.join(lines)
+
+        # Flask 直接回傳字串即可，瀏覽器會將其視為 HTML
+        return f'<pre>{output}</pre>'
+
     except MySQLError as exc:
-        # 資料庫錯誤丟 500
-        raise HTTPException(status_code=500, detail=f'Database error: {exc}') from exc
+        # 資料庫錯誤，回傳 500 狀態碼與錯誤訊息
+        return f'Database error: {exc}', 500
     finally:
         if cursor:
             cursor.close()
         if conn:
             conn.close()
 
-    # 將欄位與資料列格式化為簡單的表格樣式字串。
-    lines = ['\t'.join(columns)]
-    for row in results:
-        lines.append('\t'.join(str(item) for item in row))
-    output = '\n'.join(lines)
-    return f'<pre>{output}</pre>'
 
-
-@app.get('/')
+@app.route('/', methods=['GET'])
 def root():
     return 'Service is running on2 /.'
 
 
 if __name__ == '__main__':
-    # 檔名如果是 app.py，就用 "app:app"
-    uvicorn.run('app:app', host='0.0.0.0', port=8090)
+    # Flask 內建開發伺服器啟動方式
+    # debug=True 方便開發時除錯，正式環境建議關閉
+    app.run(host='0.0.0.0', port=8090, debug=True)
