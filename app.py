@@ -12,15 +12,26 @@ def get_db_connection():
     使用 PyMySQL 連到 MySQL。
     """
     return pymysql.connect(
-        host=os.getenv('DB_HOST', 'mysql-container'),
-        port=int(os.getenv('DB_PORT', '3307')), # 如果你是 docker-compose 對外 3307:3306，就改成預設 3307
-        #port=int(os.getenv('DB_PORT', '3306')), # 如果你是 docker-compose 對內 3307:3306，就改成預設 3306
+        host=os.getenv('DB_HOST', '127.0.0.1'),
+        port=int(os.getenv('DB_PORT', '3307')),
         user=os.getenv('DB_USER', 'testuser'),
         password=os.getenv('DB_PASSWORD', 'testpass'),
         database=os.getenv('DB_NAME', 'testdb'),
         charset="utf8mb4",
         cursorclass=pymysql.cursors.Cursor,  # 回傳 tuple
     )
+
+    # 容器內部使用 ctrl + /
+    # return pymysql.connect(
+    #     host=os.getenv('DB_HOST', 'mysql-container'),
+    #     port=int(os.getenv('DB_PORT', '3306')), # 如果你是 docker-compose 對內 3307:3306，就改成預設 3306
+    #     user=os.getenv('DB_USER', 'testuser'),
+    #     password=os.getenv('DB_PASSWORD', 'testpass'),
+    #     database=os.getenv('DB_NAME', 'testdb'),
+    #     charset="utf8mb4",
+    #     cursorclass=pymysql.cursors.Cursor,  # 回傳 tuple
+    # )
+
 
 
 @app.route('/products', methods=['GET'])
