@@ -1,7 +1,7 @@
 import os
 import pymysql
 from pymysql.err import MySQLError
-from flask import Flask, abort
+from flask import Flask, abort, render_template
 
 app = Flask(__name__)
 
@@ -50,14 +50,7 @@ def get_products():
         else:
             columns = []
 
-        # 將欄位與資料列格式化為簡單的表格樣式字串
-        lines = ['\t'.join(columns)]
-        for row in results:
-            lines.append('\t'.join(str(item) for item in row))
-        output = '\n'.join(lines)
-
-        # Flask 直接回傳字串即可，瀏覽器會將其視為 HTML
-        return f'<pre>{output}</pre>'
+        return render_template('products.html', columns=columns, results=results)
 
     except MySQLError as exc:
         # 資料庫錯誤，回傳 500 狀態碼與錯誤訊息
