@@ -1,9 +1,38 @@
 import os
 import pymysql
 from pymysql.err import MySQLError
-from flask import Flask, abort, render_template
+from flask import Flask, abort, render_template_string
 
 app = Flask(__name__)
+
+PRODUCTS_HTML = """<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>產品列表</title>
+</head>
+<body>
+    <h1>產品列表</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                {% for col in columns %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in results %}
+            <tr>
+                {% for item in row %}
+                <td>{{ item }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>"""
 
 
 def get_db_connection():
@@ -50,7 +79,7 @@ def get_products():
         else:
             columns = []
 
-        return render_template('products.html', columns=columns, results=results)
+        return render_template_string(PRODUCTS_HTML, columns=columns, results=results)
 
     except MySQLError as exc:
         # 資料庫錯誤，回傳 500 狀態碼與錯誤訊息
